@@ -1,67 +1,19 @@
 const express = require('express')
-const bookModel = require("../models/book.model")
+
 
 const {addBookValidatorMiddleware, updateBookValidatorMiddleware} = require('../validator/book.validator');
-
+const {getAllBooks, getBookById, addBook, updateBook, deleteBook} = require('../controllers/book.controller')
 const bookRouter = express.Router()
 
-bookRouter.get('/', (req, res) => {
-    bookModel.find()
-        .then(books => {
-            res.send(books)
-        })
-        .catch(err => {
-            console.log(err)
-            res.send(err)
-        })
-})
+bookRouter.get('/',getAllBooks )
 
-bookRouter.get('/:id', (req, res) => {
-    const id = req.params.id
-    bookModel.findById(id)
-        .then(book => {
-            res.status(200).send(book)
-        }).catch(err => {
-            console.log(err)
-            res.status(404).send(err)
-        })
-})
+bookRouter.get('/:id',getBookById )
 
-bookRouter.post('/', addBookValidatorMiddleware, (req, res) => {
-    const book = req.body
-    book.lastUpdateAt = new Date() // set the lastUpdateAt to the current date
-    bookModel.create(book)
-        .then(book => {
-            res.status(201).send(book)
-        }).catch(err => {
-            console.log(err)
-            res.status(500).send(err)
-        })
-})
+bookRouter.post('/', addBookValidatorMiddleware, addBook)
 
-bookRouter.put('/:id', updateBookValidatorMiddleware, (req, res) => {
-    const id = req.params.id
-    const book = req.body
-    book.lastUpdateAt = new Date() // set the lastUpdateAt to the current date
-    bookModel.findByIdAndUpdate(id, book, { new: true })
-        .then(newBook => {
-            res.status(200).send(newBook)
-        }).catch(err => {
-            console.log(err)
-            res.status(500).send(err)
-        })
-})
+bookRouter.put('/:id', updateBookValidatorMiddleware, updateBook)
 
-bookRouter.delete('/:id', (req, res) => {
-    const id = req.params.id
-    bookModel.findByIdAndRemove(id)
-        .then(book => {
-            res.status(200).send(book)
-        }).catch(err => {
-            console.log(err)
-            res.status(500).send(err)
-        })
-})
+bookRouter.delete('/:id', deleteBook)
 
 
 module.exports = bookRouter
