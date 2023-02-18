@@ -11,6 +11,7 @@ connectToDb()
 
 //routes
 const bookRouter = require('./routes/book.route')
+const authorRouter = require('./routes/author.route')
 
 
 //middleware
@@ -21,7 +22,8 @@ const bookRouter = require('./routes/book.route')
     res.send('welcome to book store')
  })
 
- app.use('/books', bookRouter)
+ app.use('/api/v1/books', bookRouter)
+ app.use('/api/v1/authors', authorRouter)
 
  // error handler middleware
  app.use((err, req, res, next) => {
